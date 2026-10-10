@@ -200,21 +200,21 @@ if page == functions.PAGE_NAMES[0]:
 
         header_of_habits = st.columns(colums_habits)
 
-        header_of_habits[0].caption('Habit')
+        header_of_habits[0].html("<p class='subtitle_2'>Habits</p>")
 
         for i , day in enumerate(week):
 
-            header_of_habits[i +1].caption(day.strftime("%a %d"))
+            header_of_habits[i +1].html(f"<p class='subtitle_3'>{day.strftime('%a %d')}")
 
             if i >= 8:
                 continue
-        header_of_habits[8].caption('This Month') 
+        header_of_habits[8].html("<p class='subtitle_2'>This Month</p>") 
 
         for habit in functions.HABITS:
 
             content_colm_habit = st.columns(colums_habits)
 
-            content_colm_habit[0].write(habit)
+            content_colm_habit[0].html(f"<p class='subtitle'>{habit}</p>")
 
             if habit in done_list:
                 done_day_list = done_list[habit]
@@ -265,7 +265,7 @@ if page == functions.PAGE_NAMES[0]:
 if page == functions.PAGE_NAMES[1]:
 
     write_month_debits.write_returned_debits()
-    # global variabels
+    
 
     BALANCE = calculation.calculate_current_balance()
     
@@ -307,7 +307,7 @@ if page == functions.PAGE_NAMES[1]:
 
     st.divider()
 
-    st.html("<h1 class='subtitle'> This Month Expenses Graphic</h1>")
+    st.html("<h1 class='title'> This Month Expenses Graphic</h1>")
 
 
     fig_expense = gp.generate_graphic_for_expenses_groupby_category()
@@ -319,7 +319,7 @@ if page == functions.PAGE_NAMES[1]:
     st.divider()
 
 
-    st.html("<h1 class='subtitle'> Debits List</h1>")
+    st.html("<h1 class='title'> Debits List</h1>")
 
     
     if df_unpaid_debits.empty:
@@ -389,7 +389,7 @@ if page == functions.PAGE_NAMES[1]:
 
     st.divider()
 
-    st.html("<h1 class='subtitle'> Working Hours List </h1>")
+    st.html("<h1 class='title'> Working Hours List </h1>")
 
 
     if not result_un_paid_salary:
