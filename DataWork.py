@@ -188,6 +188,129 @@ def get_done_days():
         functions.erro_logger(e, 'DataWorks/get_done_days')        
 
 
+# Todos
+
+def add_todos(todo, category, time_request):
+
+    try:
+
+        corsor.execute('''
+
+                CREATE TABEL IF NOT EXISTS (
+                
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT,
+                category TEXT,
+                time_request REAL,
+                done INTEGER DEFAULT 0,
+                created_date TEXT,
+                done_date TEXT DEFAULT None
+                
+                )
+
+                ''')
+
+        corsor.execute('''
+
+                INSERT INTO Todos(title, category, time_request, created_date)
+                VALUES(?,?,?)
+
+                ''', (todo, category, time_request,functions.DATE_OF_DAY,))
+
+        connection.commit()
+    
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/add_todos')
+
+
+def delete_todo(todo_id):
+
+    try:
+        corsor.execute('''
+
+                DELETE FROM Todos
+                WHERE id = ?
+
+            ''', (todo_id))
+
+        connection.commit()
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/delete_todo')
+
+
+
+def well_done_todo(todo_id):
+
+    try:
+
+        corsor.execute('''
+        
+                UPDATE Todos
+                SET done = 1 AND done_date = ?
+                WHERE id = ?
+
+        ''', (functions.DATE_OF_DAY, todo_id))
+
+        connection.commit()
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/well_done_todo')
+
+
+def df_todos():
+
+    try:
+
+        return pd.read_sql('''
+
+            SELECT * FROM Todos
+            WHERE done = 0
+
+                ''')
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/df_todos') 
+        return pd.DataFrame()   
+
+
+
+    
+
+
+# Not down briefly
+
+def add_briefly_note(note ):
+    try:
+
+        corsor.execute('''
+
+            CREATE TABLE Notes IF NOT EXISTS (
+            
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            note TEXT,
+            pinned INTEGER DEFAULT 0,
+            added_date TEXT
+            )
+
+            ''')
+
+        corsor.execute('''
+
+            INSERT INTO Notes (note, added_date)
+            VALUES(?,?)
+
+            ''', (note, functions.DATE_OF_DAY))
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/add_briefly_note')  
+
+def delete_note(note_id):
+
+    print('')          
+
+
+
 
 # balance
 

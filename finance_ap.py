@@ -55,7 +55,7 @@ if page == functions.PAGE_NAMES[0]:
 
     calcol1, calcol2 = st.columns([1,3])
 
-    with calcol1:
+    with calcol1: #input for calendar
         with st.form('WritePlan'):
 
             st.html("<h1 class='subtitle'> Add Task</h1>")
@@ -84,22 +84,27 @@ if page == functions.PAGE_NAMES[0]:
                     st.success(f'{titel} added to {date}')
                     st.rerun()
 
-    with calcol2:
+    with calcol2:  # Calendar
 
         st.html("<h1 class='subtitle'> Task Board </h1>")
 
         df_planner = DataWork.df_planner()  
 
         events = []
+        
 
 
         for _ , line in df_planner.iterrows():
+
+            color = functions.PLANNER_COLOURS.get(line['category'], '#888888')
+
             events.append({
                 'id': str(line['id']),
                 'title': f"{line['title']}",
                 'start': f"{line['date']}T{str(line['start'])[:5]}",
                 'end':   f"{line['date']}T{str(line['end'])[:5]}",
-                'color': functions.PLANNER_COLOURS.get(line['category'], '#888888'),
+                'color': color +'40',
+                'backgroundcolor':color,
                 'extendedProps': {
                     'Category': str(line['category']),
                     'Note': str(line['note']),
@@ -131,26 +136,36 @@ if page == functions.PAGE_NAMES[0]:
         }   
 
         calendar_css = """
-                    .fc-event-title {
-                        white-space: pre-line !important; 
-                        font-weight: 700 !important;  
-                        word-break: break-word;
-                        overflow: visible !important;
-                        text-overflow: clip !important;
-                        line-height: 1.3;
-                    }
-                    .fc-event-time { font-weight: 400 !important; font-size: 11px; }
-                    .fc-daygrid-event,
-                    .fc-event-main,
-                    .fc-event-title-container {
-                        white-space: normal !important;
-                        overflow: visible !important;
-                    }
-                    .fc-event-main-frame { flex-direction: column; }
-                    .fc-daygrid-event { white-space: normal !important; }
+            
+            .fc {
+                --fc-border-color: rgba(255, 255, 255, 0.15);
+                --fc-today-bg-color: rgba(3, 174, 3, 0.12);
+            }
 
-                    
-                """
+            .fc-daygrid-event.fc-event {
+                margin: 0 0.2rem 0.5rem 0.2rem;
+                border-width: 3px;
+                border-radius: 8px;
+            }
+
+            .fc-event-title {
+                white-space: pre-line !important;
+                font-weight: 700 !important;
+                padding: 0.5rem 0 !important;
+                word-break: break-word;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                line-height: 1.3;
+            }
+            .fc-event-time { font-weight: 400 !important; font-size: 0.7rem; margin: 0.5rem 0 !important; }
+            .fc-daygrid-event,
+            .fc-event-main,
+            .fc-event-title-container {
+                white-space: normal !important;
+                overflow: visible !important;
+            }
+            .fc-event-main-frame { flex-direction: column; }
+            """
 
         state = calendar(
             events=events,
@@ -181,7 +196,7 @@ if page == functions.PAGE_NAMES[0]:
 
     st.divider()
 
-    with st.container(border=True):
+    with st.container(border=True): # Habits Container
 
         week = []
 
