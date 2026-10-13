@@ -67,3 +67,10 @@
     font-size: 0.9rem;
     opacity: 0.7;
 }
+
+
+
+/* pinned note card */
+[class*="st-key-note_card_pinned_"] {
+    border-color: #f0a500 !important;
+}

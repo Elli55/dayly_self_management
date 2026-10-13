@@ -187,69 +187,67 @@ def get_done_days():
         functions.erro_logger(e, 'DataWorks/get_done_days')        
 
 
-# Todos
 
-def add_todos(todo, category, time_request):
+# tasks and notes
 
+def init_task_tables():
     try:
-
         corsor.execute('''
-
-                CREATE TABEL IF NOT EXISTS (
-                
+            CREATE TABLE IF NOT EXISTS Todos(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT,
                 category TEXT,
-                time_request REAL,
+                time_request INTEGER,
                 done INTEGER DEFAULT 0,
                 created_date TEXT,
-                done_date TEXT DEFAULT None
-                
-                )
-
-                ''')
+                done_date TEXT
+            )''')
 
         corsor.execute('''
-
-                INSERT INTO Todos(title, category, time_request, created_date)
-                VALUES(?,?,?)
-
-                ''', (todo, category, time_request,functions.DATE_OF_DAY,))
+            CREATE TABLE IF NOT EXISTS Notes(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                note TEXT,
+                pinned INTEGER DEFAULT 0,
+                added_date TEXT
+            )''')
 
         connection.commit()
-    
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/init_task_tables')
+
+
+# todos
+
+def add_todos(todo, category, time_request):
+    try:
+        corsor.execute('''
+            INSERT INTO Todos(title, category, time_request, created_date)
+            VALUES(?,?,?,?)
+            ''', (todo, category, time_request, functions.DATE_OF_DAY))
+
+        connection.commit()
+
     except Exception as e:
         functions.erro_logger(e, 'DataWork/add_todos')
 
 
 def delete_todo(todo_id):
-
     try:
-        corsor.execute('''
-
-                DELETE FROM Todos
-                WHERE id = ?
-
-            ''', (todo_id))
-
+        corsor.execute('DELETE FROM Todos WHERE id = ?', (todo_id,))
         connection.commit()
 
     except Exception as e:
         functions.erro_logger(e, 'DataWork/delete_todo')
 
 
-
 def well_done_todo(todo_id):
-
     try:
-
         corsor.execute('''
-        
-                UPDATE Todos
-                SET done = 1 AND done_date = ?
-                WHERE id = ?
-
-        ''', (functions.DATE_OF_DAY, todo_id))
+            UPDATE Todos
+            SET done = 1, done_date = ?
+            WHERE id = ?
+            ''', (functions.DATE_OF_DAY, todo_id))
 
         connection.commit()
 
@@ -258,95 +256,78 @@ def well_done_todo(todo_id):
 
 
 def df_todos():
-
     try:
-
-        return pd.read_sql('''
-
-            SELECT * FROM Todos
-            WHERE done = 0
-
-                ''')
+        return pd.read_sql('SELECT * FROM Todos WHERE done = 0 ORDER BY id DESC', connection)
 
     except Exception as e:
-        functions.erro_logger(e, 'DataWork/df_todos') 
-        return pd.DataFrame()   
+        functions.erro_logger(e, 'DataWork/df_todos')
+        return pd.DataFrame(columns=['id', 'title', 'category', 'time_request',
+                                     'done', 'created_date', 'done_date'])
 
 
+# notes
 
-    
-
-
-# Not down briefly
-
-def add_briefly_note(note ):
+def add_briefly_note(note):
     try:
-
         corsor.execute('''
-
-            CREATE TABLE Notes IF NOT EXISTS (
-            
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            note TEXT,
-            pinned INTEGER DEFAULT 0,
-            added_date TEXT
-            )
-
-            ''')
-
-        corsor.execute('''
-
-            INSERT INTO Notes (note, added_date)
+            INSERT INTO Notes(note, added_date)
             VALUES(?,?)
-
             ''', (note, functions.DATE_OF_DAY))
 
+        connection.commit()
+
     except Exception as e:
-        functions.erro_logger(e, 'DataWork/add_briefly_note')  
+        functions.erro_logger(e, 'DataWork/add_briefly_note')
+
 
 def delete_note(note_id):
-
     try:
-
-
-        corsor.execute('''
-
-            SELETE FROM Notes
-            WHERE id = ?
-
-            ''', (note_id,))
-
-        connection.commit()     
+        corsor.execute('DELETE FROM Notes WHERE id = ?', (note_id,))
+        connection.commit()
 
     except Exception as e:
-        functions.erro_logger(e, 'DataWork/delete_note')  
+        functions.erro_logger(e, 'DataWork/delete_note')
 
-def note_to_todo(note_id, category):
 
+def toggle_pin_note(note_id):
     try:
-
-        note = pd.read_sql('''
-
-            SELECT 1 FROM Notes
-            WHERE id = ?
-
-            ''', connection, params=(note_id,)).fetchall()
-        
-        corsor.execute('''
-
-            DELETE FROM Notes 
-            WHERE id = ?
-
-            ''', (note_id))
-
-        add_todos(note['note'],category, functions.DATE_OF_DAY)
+        corsor.execute('UPDATE Notes SET pinned = 1 - pinned WHERE id = ?', (note_id,))
+        connection.commit()
 
     except Exception as e:
+        functions.erro_logger(e, 'DataWork/toggle_pin_note')
+
+
+def df_notes():
+    try:
+        return pd.read_sql('SELECT * FROM Notes ORDER BY pinned DESC, id DESC', connection)
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/df_notes')
+        return pd.DataFrame(columns=['id', 'note', 'pinned', 'added_date'])
+
+
+def note_to_todo(note_id, category, time_request):
+    try:
+        corsor.execute('SELECT note FROM Notes WHERE id = ?', (note_id,))
+        row = corsor.fetchone()
+
+        if row is None:
+            return
+
+        corsor.execute('''
+            INSERT INTO Todos(title, category, time_request created_date)
+            VALUES(?,?,?,?)
+            ''', (row[0], category,time_request, functions.DATE_OF_DAY))
+
+        corsor.execute('DELETE FROM Notes WHERE id = ?', (note_id,))
+
+        connection.commit()
+
+    except Exception as e:
+        connection.rollback()
         functions.erro_logger(e, 'DataWork/note_to_todo')
 
-
- 
-            
 
 
 

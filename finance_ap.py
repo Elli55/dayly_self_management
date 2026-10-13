@@ -16,6 +16,7 @@ try:
     st.set_page_config(page_title='My Space', page_icon='🏃‍♂️‍➡️', layout='wide')
 
     st.markdown(functions.load_css(), unsafe_allow_html=True) 
+    DataWork.init_task_tables()
     
 
 
@@ -52,6 +53,158 @@ if page == functions.PAGE_NAMES[0]:
 
 
 
+
+    todo_col, note_col = st.columns(2, gap='xxsmall')
+
+    with todo_col:  # To-Do
+
+        st.html("<h1 class='subtitle'> How much time do I have? </h1>")
+
+        filter_col, add_col, _ = st.columns([6, 1.6, 2.4], gap='xxsmall', vertical_alignment='center')
+        with filter_col:
+            time_filter = st.segmented_control('Time', list(functions.TODO_TIMEDIC.keys()),
+                                               key='todo_time', label_visibility='collapsed')
+
+
+
+            
+
+
+
+        with add_col.popover('+ Add', width='stretch'):
+
+            with st.form('AddTodo', clear_on_submit=True, border=False):
+
+                todo_title = st.text_input('New task', placeholder='New task...')
+                todo_category = st.selectbox('Category', functions.TODO_CATEGORYS)
+                todo_duration = st.selectbox('Duration', list(functions.TODO_TIMEDIC.keys()))
+
+                if st.form_submit_button('Add', width='stretch'):
+
+                    if not todo_title.strip():
+                        st.warning('The title must be written.')
+                    else:
+                        DataWork.add_todos(todo_title.strip(), todo_category,
+                                           functions.TODO_TIMEDIC[todo_duration])
+
+                        
+
+        time_limit = functions.TODO_TIMEDIC.get(time_filter)
+        df_todos = DataWork.df_todos()
+
+
+        if time_limit is None:
+            shown_todos = df_todos
+        else:
+            shown_todos = df_todos[df_todos['time_request'] == time_limit]
+
+       
+
+        if shown_todos.empty:
+            st.info('Nothing to do here')
+        else:
+            list_height = min(len(shown_todos) * 88, 320)
+
+            with st.container(height=list_height, border=False):
+
+                for _, row in shown_todos.iterrows():
+
+                    with st.container(border=True, key=f"todo_row_{row['id']}"):
+
+                        todo_cols = st.columns([0.6, 5, 1.8, 1.4, 0.8], gap='xxsmall',
+                                               vertical_alignment='center')
+
+                        todo_cols[0].checkbox('Done', key=f"todo_done_{row['id']}",
+                                              label_visibility='collapsed',
+                                              on_change=DataWork.well_done_todo, args=(row['id'],))
+                        todo_cols[1].html(f"<p class='element_of_df'>{row['title']}</p>")
+                        todo_cols[2].html(f"<span class='todo_tag'>{row['category'] or ''}</span>")
+                        todo_cols[3].caption(functions.TODO_TIMEDIC.get(row['time_request'], ''))
+                        todo_cols[4].button('×', type='tertiary', key=f"todo_del_{row['id']}",
+                                            on_click=DataWork.delete_todo, args=(row['id'],))
+
+        hidden_todos = len(df_todos) - len(shown_todos)
+
+        if hidden_todos:
+            st.caption(f'{hidden_todos} task(s) hidden by the time filter')
+
+
+
+
+
+
+
+
+
+        with note_col:  # Quick notes
+
+            st.html("<h1 class='subtitle'> Quick Notes </h1>")
+
+            with st.form('AddNote', clear_on_submit=True, border=False):
+
+                note_form_cols = st.columns([5, 1], gap='xxsmall', vertical_alignment='center')
+
+                note_text = note_form_cols[0].text_input('New note', placeholder='Type and press Enter...',
+                                                        label_visibility='collapsed')
+
+                if note_form_cols[1].form_submit_button('Save', width='stretch'):
+
+                    if note_text:
+                        DataWork.add_briefly_note(note_text)
+
+            df_notes = DataWork.df_notes()
+
+          
+
+            if df_notes.empty:
+                st.info('No notes yet')
+            else:
+                notes_height = min(len(df_notes) * 150, 320)
+
+                with st.container(height=notes_height, border=False):
+
+                    note_group = None
+
+                    for _, row in df_notes.iterrows():
+
+                        group = 'Pinned' if row['pinned'] else 'Recent'
+
+                        if group != note_group:
+                            st.caption(group)
+                            note_group = group
+
+                        with st.container(border=True, key=f"note_card_{group.lower()}_{row['id']}"):
+
+                            st.text(row['note'])
+
+                            note_cols = st.columns([3, 1, 1.6, 1], gap='xxsmall', vertical_alignment='center')
+
+                            note_cols[0].caption(row['added_date'])
+
+                            note_cols[1].button('Unpin' if row['pinned'] else 'Pin', type='tertiary',
+                                                key=f"note_pin_{row['id']}",
+                                                on_click=DataWork.toggle_pin_note, args=(row['id'],))
+
+                            with note_cols[2].popover('To-do', type='tertiary'):
+                                note_category = st.selectbox('Category', functions.TODO_CATEGORYS,
+                                                            key=f"note_cat_{row['id']}")
+                                note_time_request = st.selectbox('Time request', list(functions.TODO_TIMEDIC),
+                                                                key=f"note_time_{row['id']}")
+                                st.button('Convert', key=f"note_conv_{row['id']}",
+                                        on_click=DataWork.note_to_todo,
+                                        args=(row['id'], note_category,
+                                                functions.TODO_TIMEDIC[note_time_request]))
+
+                            note_cols[3].button('Delete', type='tertiary',
+                                                key=f"note_del_{row['id']}",
+                                                on_click=DataWork.delete_note, args=(row['id'],))
+
+
+
+    st.divider()
+
+
+    st.divider()
 
     calcol1, calcol2 = st.columns([1,3])
 
@@ -104,7 +257,8 @@ if page == functions.PAGE_NAMES[0]:
                 'start': f"{line['date']}T{str(line['start'])[:5]}",
                 'end':   f"{line['date']}T{str(line['end'])[:5]}",
                 'color': color +'40',
-                'backgroundcolor':color,
+                'backgroundColor': color + '40',
+                'borderColor': color,
                 'extendedProps': {
                     'Category': str(line['category']),
                     'Note': str(line['note']),
@@ -380,7 +534,7 @@ if page == functions.PAGE_NAMES[1]:
                     DataWork.write_expenses(line['name'],paid_amout,line['name'],functions.DATE_OF_DAY, f'Paid kreditor for {line['name']}')
                     DataWork.change_debit_status(line['id'])
                     if rest:
-                        DataWork.write_debits(line['name'], rest, line['deadline'])
+                        DataWork.write_debits(line['name'], rest, line['deadline'],functions.DATE_OF_DAY)
 
                     st.rerun()
 

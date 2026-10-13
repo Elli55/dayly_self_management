@@ -294,5 +294,7 @@ corsor = connection.cursor()
 # print(functions.DATE_OF_DAY)
 
 
-print(functions.TODAY - datetime.timedelta(days=3))
-print(datetime.date.today().weekday())
+# print(functions.TODAY - datetime.timedelta(days=3))
+# print(datetime.date.today().weekday())
+
+print(pd.read_sql('''SELECT * FROM Todos''', connection))
