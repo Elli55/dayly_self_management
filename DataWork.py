@@ -1,4 +1,3 @@
-import sqlite3 as sq
 import functions
 import pandas as pd
 from datetime import datetime
@@ -307,7 +306,48 @@ def add_briefly_note(note ):
 
 def delete_note(note_id):
 
-    print('')          
+    try:
+
+
+        corsor.execute('''
+
+            SELETE FROM Notes
+            WHERE id = ?
+
+            ''', (note_id,))
+
+        connection.commit()     
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/delete_note')  
+
+def note_to_todo(note_id, category):
+
+    try:
+
+        note = pd.read_sql('''
+
+            SELECT 1 FROM Notes
+            WHERE id = ?
+
+            ''', connection, params=(note_id,)).fetchall()
+        
+        corsor.execute('''
+
+            DELETE FROM Notes 
+            WHERE id = ?
+
+            ''', (note_id))
+
+        add_todos(note['note'],category, functions.DATE_OF_DAY)
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/note_to_todo')
+
+
+ 
+            
+
 
 
 

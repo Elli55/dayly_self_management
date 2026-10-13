@@ -117,7 +117,13 @@ PLANNER_COLOURS = {
 HABITS = ['Sport', 'Reading', 'Math']
 
 
+TODO_TIMEDIC = {'15 min':15,
+                '1 hour':60,
+                '3 hours':180,
+                '6 hours':360,
+                '1 day':1440}
 
+print(24*60)
 
 
 
