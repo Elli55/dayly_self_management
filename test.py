@@ -297,4 +297,40 @@ corsor = connection.cursor()
 # print(functions.TODAY - datetime.timedelta(days=3))
 # print(datetime.date.today().weekday())
 
-print(pd.read_sql('''SELECT * FROM Todos''', connection))
+# print(pd.read_sql('''SELECT * FROM Todos''', connection))
+
+# corsor.execute('''
+
+#     DELETE FROM Todos
+#     ''')
+
+# corsor.execute(''' UPDATE Income
+#                    SET note = 'Tips'
+#                    WHERE  note = 'Schollership' 
+
+#                 ''')
+
+connection.commit()
+
+def calculate_tips_pre_company(company):
+
+    df_tips = pd.read_sql('''SELECT * FROM Income
+                             WHERE note = 'Tips'
+
+                            ''', connection)
+
+    sum = 0
+    
+    for _, line in df_tips.iterrows():
+
+        if int(line['date'][5]) ==1:
+            print(f"{line['date']} - {line['amount']}")
+            sum += line['amount']
+    print(sum)
+
+
+
+
+
+    
+calculate_tips_pre_company('BrinkGeherMeyer')    

@@ -450,7 +450,7 @@ if page == functions.PAGE_NAMES[1]:
     col1, col2, col3 = st.columns(3, gap='xxsmall')
 
 
-    with col1:
+    with col1: #Balance Card
 
         st.html(functions.generate_metric_card('Balance', 
                                                 BALANCE, delta_for_balance, 
@@ -459,14 +459,14 @@ if page == functions.PAGE_NAMES[1]:
                                                 last_label='Last month avg'))
 
         
-    with col2:
+    with col2: # Income Card
 
         st.html(functions.generate_metric_card('Income', 
                                                 sum_this_month_income, 
                                                 delta_for_income, last_month_income,
                                                 higher_is_better=True))
 
-    with col3:
+    with col3: # Expenses Card
 
         st.html(functions.generate_metric_card('Expenses', 
                                                 sum_this_month_expenses, 
@@ -590,7 +590,7 @@ if page == functions.PAGE_NAMES[1]:
 
   
 
-if page == functions.PAGE_NAMES[2]:
+if page == functions.PAGE_NAMES[2]: # Input area
 
 
     DF_EXPENSES = calculation.load_expenses_df()
@@ -602,7 +602,7 @@ if page == functions.PAGE_NAMES[2]:
 
     col1, col2, col3 =st.columns([5,5,5])
 
-    with col1:
+    with col1: #Expenses
         with st.form('WriteExpense'):
             st.subheader('Write Expenses')
             name_of_expense = st.text_input('Expense name', placeholder='Weekly...', max_chars=50)
@@ -621,7 +621,7 @@ if page == functions.PAGE_NAMES[2]:
                     DataWork.write_expenses(name_of_expense, amount_of_expense, category,date_of_expense, note_of_expense)
                     st.success(f'{amount_of_expense} - {name_of_expense} added to Expenses Table')
 
-    with col2:
+    with col2: # Incomes
 
         with st.container(border=True):
             st.subheader('Write Income')
@@ -629,15 +629,15 @@ if page == functions.PAGE_NAMES[2]:
 
 
 
-            if name_of_income == functions.INCOME_SOURCE[0]:
-                            with st.form(f'WriteIncome{functions.INCOME_SOURCE[2]}'):
+            if name_of_income == functions.INCOME_SOURCE[0]: #Tips
+                            with st.form(f'WriteIncome{functions.INCOME_SOURCE[0]}'):
                                 work_place = st.selectbox('Where : ', functions.WORKED_COMPANIES.keys())
                                 amoun_of_tip = st.number_input('Amount : ', min_value=0.0, max_value=100000.0, step=1.0)
                                 date_of_Tips_taken = st.date_input('Date: ', functions.DATE_OF_DAY)
                                 if st.form_submit_button('Write'):
-                                    DataWork.write_income(work_place, amoun_of_tip, date_of_Tips_taken,functions.INCOME_SOURCE[2])
+                                    DataWork.write_income(work_place, amoun_of_tip, date_of_Tips_taken,functions.INCOME_SOURCE[0])
 
-            elif name_of_income == functions.INCOME_SOURCE[1]:
+            elif name_of_income == functions.INCOME_SOURCE[1]: # Work
                 with st.form(f'WriteIncome{functions.INCOME_SOURCE[0]}'):
                     company = st.selectbox('Company : ', functions.WORKED_COMPANIES.keys())
                     from_when = st.date_input('From when : ', functions.DATE_OF_DAY )
@@ -646,13 +646,13 @@ if page == functions.PAGE_NAMES[2]:
                     if st.form_submit_button('Write'):
                         DataWork.payed_from_works(company, date_of_pay,from_when, to_when)
 
-            elif  name_of_income == functions.INCOME_SOURCE[2]:
-                with st.form(f'WriteIncome{functions.INCOME_SOURCE[1]}'):
+            elif  name_of_income == functions.INCOME_SOURCE[2]: # Schollership
+                with st.form(f'WriteIncome{functions.INCOME_SOURCE[2]}'):
                     donor = st.selectbox('Soruce :', functions.DONOR_SCHOLLERSHIPS)
                     amount_from_donor = st.number_input('Amount : ', min_value=0.0 , max_value=10000.0, step=1.0)
                     date_of_stipendium = st.date_input('Date: ', functions.DATE_OF_DAY)
                     if st.form_submit_button('Write'):
-                        DataWork.write_income(donor, date_of_stipendium,amount_from_donor,functions.INCOME_SOURCE[1])
+                        DataWork.write_income(donor, date_of_stipendium,amount_from_donor,functions.INCOME_SOURCE[2])
                         
 
             
@@ -666,6 +666,7 @@ if page == functions.PAGE_NAMES[2]:
                     if st.form_submit_button('Write'):
                         DataWork.write_income(from_who, amoun_of_debit,date_of_taking, functions.INCOME_SOURCE[3])
                         DataWork.write_debits(from_who,amoun_of_debit,deadline,date_of_taking)
+            
             elif name_of_income ==  functions.INCOME_SOURCE[4]:
                 with st.form(f'WriteIncome{functions.INCOME_SOURCE[4]}'):
                     type_of_invest = st.selectbox('Which one: ', ['Cash','Coin', 'Crypto'])     
