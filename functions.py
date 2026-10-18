@@ -61,8 +61,15 @@ WEEK_TODAY = datetime.date.today().weekday()
 MONDAY = TODAY - datetime.timedelta(days=WEEK_TODAY)
 
 
+# from secrets.toml
 
+try:
+    WORKED_COMPANIES = dict(st.secrets['worked_companies'])
 
+    DONOR_SCHOLLERSHIPS = st.secrets['donor_schollerships']['names']
+
+except Exception as e:
+    erro_logger(e, '.secrets.toml')
 
 PAGE_NAMES = ['Dayly Dashboard', 'Finance', 'Data Entery', 'Math']
 
@@ -96,10 +103,7 @@ except Exception as e:
     LIST_OF_DATES_FOR_EXPENSES = []
     erro_logger(e, 'function/list_of_dates_for_expenses') 
 
-WORKED_COMPANIES = {'BrinkGeherMeyer':{'montly_hours':80, 'salary':980}, 
-                    'Rampendahl ':{'montly_hours':0, 'salary':0}} 
 
-DONOR_SCHOLLERSHIPS = ['BaFög', 'IPS']
 
 PLANNER_CATEGORIES = ['Work', 'Study','Sport','Tanze', 'Task', 'Personal', 'Fun']
 
