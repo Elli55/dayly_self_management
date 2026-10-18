@@ -60,7 +60,7 @@ def calculate_last_month_balance_and_delta_for_balance():
 
         df_last_month_balance = pd.read_sql('''SELECT avg(balance) as avg_balance FROM Balance 
 
-                        WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '-1 month')
+                        WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now','start of month' ,'-1 month')
 
                         ''', connection)
 
@@ -115,7 +115,7 @@ def last_month_expenses_and_delta():
         df_last_month_expenses = pd.read_sql('''
 
                                 SELECT SUM(amount) as sum_amount FROM Expenses
-                                WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '-1 month')
+                                WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now','start of month' , '-1 month')
 
                             ''', connection).iloc[0,0]
         last_month_expenses = round(float(df_last_month_expenses), 2)
@@ -154,7 +154,7 @@ def calculate_sum_of_this_month_income():
 def calculate_last_month_income_and_delta():
     try:
         df_last_month_expenses = pd.read_sql('''SELECT COALESCE(SUM(amount), 0) FROM Income
-                               WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '-1 month')''',
+                               WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now','start of month', '-1 month')''',
                             connection).iloc[0, 0]
         last_month_income = round(float(df_last_month_expenses), 2)
 
