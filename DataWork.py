@@ -624,3 +624,35 @@ def change_debit_status(iid):
         functions.proces_logger(f'for {iid} of debit status changed', 'functions/change_debit_status')
     except Exception as e:
         functions.erro_logger(e, 'functions/change_debit_status')
+
+
+
+# stady
+
+def add_uni_modul(name : str, semester: int, prof: str, exam: str = 'Unknown', done :int = 0, overall_mark : float = 0.0 ):
+    try:
+
+        corsor.execute('''
+
+            CREATE TABLE IF NOT EXISTS UniModuls(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            semester TEXT,
+            prof TEXT,
+            exam TEXT,
+            done INTEGER,
+            overall_mark REAL)
+
+                ''')
+        
+        corsor.execute('''
+
+            INSERT INTO Uni(id, name, semester, prof, exam, done, overall_mark)
+            VALUES (?,?,?,?,?,?)
+
+            ''',(name, semester, prof, exam, done, overall_mark))
+
+        connection.commit()
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/add_uni_modul')    

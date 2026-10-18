@@ -1,2 +1,3 @@
-# self_finance_managment
-Just for using dayly 
+# dayly managamenet
+
+For managing daily tasks 
