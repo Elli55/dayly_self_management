@@ -53,6 +53,152 @@ if page == functions.PAGE_NAMES[0]:
 
 
 
+    calcol1, calcol2 = st.columns([1,3])
+    
+    with calcol1: #input for calendar
+        with st.form('WritePlan'):
+
+            st.html("<h1 class='subtitle'> Add Task</h1>")
+
+            titel = st.text_input('Title', placeholder='Brink')
+            category = st.selectbox('Category', functions.PLANNER_CATEGORIES)
+            date = st.date_input('Date', functions.DATE_OF_DAY)
+
+            time_col1, time_col2 = st.columns(2, gap='xxsmall')
+
+            with time_col1:
+                start_time = st.time_input('Start: ', datetime.time(9,0))
+            with time_col2:
+                end_time = st.time_input('End: ', datetime.time(10,0))
+
+            note = st.text_input('Note', value='')
+
+            if st.form_submit_button('Add'):
+
+                if not titel:
+                    st.warning('The title must be written.')
+                elif start_time >= end_time:
+                    st.warning('There is an error in the adding of times.')
+                else:
+                    DataWork.add_plan_element(titel, category, date, start_time, end_time, note)
+                    st.success(f'{titel} added to {date}')
+                    st.rerun()
+
+    with calcol2:  # Calendar
+
+        st.html("<h1 class='subtitle'> Task Board </h1>")
+
+        df_planner = DataWork.df_planner()  
+
+        events = []
+        
+
+
+        for _ , line in df_planner.iterrows():
+
+            color = functions.PLANNER_COLOURS.get(line['category'], '#888888')
+
+            events.append({
+                'id': str(line['id']),
+                'title': f"{line['title']}",
+                'start': f"{line['date']}T{str(line['start'])[:5]}",
+                'end':   f"{line['date']}T{str(line['end'])[:5]}",
+                'color': color +'40',
+                'backgroundColor': color + '40',
+                'borderColor': color,
+                'extendedProps': {
+                    'Category': str(line['category']),
+                    'Note': str(line['note']),
+                    'Start': str(line['start']),
+                    'End': str(line['end']),
+                    'db_id': int(line['id'])
+
+                }
+            })
+
+
+        calendar_options = {
+            'editable':         False,
+            'selectable':       True,
+            'initialView':      'dayGridWeek',
+            'eventDisplay':     'block',
+            'displayEventTime': True,
+            'displayEventEnd':  True,
+            'eventDisplay': 'block',
+            'eventTimeFormat': {'hour': '2-digit', 'minute': '2-digit', 'hour12': False},
+            'firstDay':         1,
+            'headerToolbar': {
+                'left':   'today prev,next',
+                'center': 'title',
+                'right':  'dayGridMonth,dayGridWeek,listWeek'
+            },
+
+            'height': 550
+        }   
+
+        calendar_css = """
+            
+            .fc {
+                --fc-border-color: rgba(255, 255, 255, 0.15);
+                --fc-today-bg-color: rgba(3, 174, 3, 0.12);
+            }
+
+            .fc-daygrid-event.fc-event {
+                margin: 0 0.2rem 0.5rem 0.2rem;
+                border-width: 3px;
+                border-radius: 8px;
+            }
+
+            .fc-event-title {
+                white-space: pre-line !important;
+                font-weight: 700 !important;
+                padding: 0.5rem 0 !important;
+                word-break: break-word;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                line-height: 1.3;
+            }
+            .fc-event-time { font-weight: 400 !important; font-size: 0.7rem; margin: 0.5rem 0 !important; }
+            .fc-daygrid-event,
+            .fc-event-main,
+            .fc-event-title-container {
+                white-space: normal !important;
+                overflow: visible !important;
+            }
+            .fc-event-main-frame { flex-direction: column; }
+            """
+
+        state = calendar(
+            events=events,
+            options=calendar_options,
+            custom_css=calendar_css,
+            key='planner_calendar'
+        )
+
+        
+
+        if state.get('eventClick'):
+            event    = state['eventClick']['event']
+            props = event.get('extendedProps', {})
+            raw   = event.get('title', '')
+
+            with st.container(border=True):
+                col_info, col_del = st.columns([4, 1])
+                with col_info:
+                    st.html(f"<h1 class='subtitle'> {raw} </h1>")
+                    st.caption(f"{str(props.get('Start',''))[:5]} – {str(props.get('End',''))[:5]}")
+                    st.caption(props.get('Category', '—'))
+                    if props.get('Note') and props.get('Note') not in ('', 'None'):
+                        st.caption(props.get('Note'))
+                with col_del:
+                    if st.button('Delete', key='del_plan', type='secondary', use_container_width=True):
+                        DataWork.delete_from_planner(props['db_id'])
+                        st.rerun()
+    
+    st.divider()
+
+
+
 
     todo_col, note_col = st.columns(2, gap='xxsmall')
 
@@ -206,149 +352,7 @@ if page == functions.PAGE_NAMES[0]:
 
     st.divider()
 
-    calcol1, calcol2 = st.columns([1,3])
-
-    with calcol1: #input for calendar
-        with st.form('WritePlan'):
-
-            st.html("<h1 class='subtitle'> Add Task</h1>")
-
-            titel = st.text_input('Title', placeholder='Brink')
-            category = st.selectbox('Category', functions.PLANNER_CATEGORIES)
-            date = st.date_input('Date', functions.DATE_OF_DAY)
-
-            time_col1, time_col2 = st.columns(2, gap='xxsmall')
-
-            with time_col1:
-                start_time = st.time_input('Start: ', datetime.time(9,0))
-            with time_col2:
-                end_time = st.time_input('End: ', datetime.time(10,0))
-
-            note = st.text_input('Note', value='')
-
-            if st.form_submit_button('Add'):
-
-                if not titel:
-                    st.warning('The title must be written.')
-                elif start_time >= end_time:
-                    st.warning('There is an error in the adding of times.')
-                else:
-                    DataWork.add_plan_element(titel, category, date, start_time, end_time, note)
-                    st.success(f'{titel} added to {date}')
-                    st.rerun()
-
-    with calcol2:  # Calendar
-
-        st.html("<h1 class='subtitle'> Task Board </h1>")
-
-        df_planner = DataWork.df_planner()  
-
-        events = []
-        
-
-
-        for _ , line in df_planner.iterrows():
-
-            color = functions.PLANNER_COLOURS.get(line['category'], '#888888')
-
-            events.append({
-                'id': str(line['id']),
-                'title': f"{line['title']}",
-                'start': f"{line['date']}T{str(line['start'])[:5]}",
-                'end':   f"{line['date']}T{str(line['end'])[:5]}",
-                'color': color +'40',
-                'backgroundColor': color + '40',
-                'borderColor': color,
-                'extendedProps': {
-                    'Category': str(line['category']),
-                    'Note': str(line['note']),
-                    'Start': str(line['start']),
-                    'End': str(line['end']),
-                    'db_id': int(line['id'])
-
-                }
-            })
-
-
-        calendar_options = {
-            'editable':         False,
-            'selectable':       True,
-            'initialView':      'dayGridWeek',
-            'eventDisplay':     'block',
-            'displayEventTime': True,
-            'displayEventEnd':  True,
-            'eventDisplay': 'block',
-            'eventTimeFormat': {'hour': '2-digit', 'minute': '2-digit', 'hour12': False},
-            'firstDay':         1,
-            'headerToolbar': {
-                'left':   'today prev,next',
-                'center': 'title',
-                'right':  'dayGridMonth,dayGridWeek,listWeek'
-            },
-
-            'height': 550
-        }   
-
-        calendar_css = """
-            
-            .fc {
-                --fc-border-color: rgba(255, 255, 255, 0.15);
-                --fc-today-bg-color: rgba(3, 174, 3, 0.12);
-            }
-
-            .fc-daygrid-event.fc-event {
-                margin: 0 0.2rem 0.5rem 0.2rem;
-                border-width: 3px;
-                border-radius: 8px;
-            }
-
-            .fc-event-title {
-                white-space: pre-line !important;
-                font-weight: 700 !important;
-                padding: 0.5rem 0 !important;
-                word-break: break-word;
-                overflow: visible !important;
-                text-overflow: clip !important;
-                line-height: 1.3;
-            }
-            .fc-event-time { font-weight: 400 !important; font-size: 0.7rem; margin: 0.5rem 0 !important; }
-            .fc-daygrid-event,
-            .fc-event-main,
-            .fc-event-title-container {
-                white-space: normal !important;
-                overflow: visible !important;
-            }
-            .fc-event-main-frame { flex-direction: column; }
-            """
-
-        state = calendar(
-            events=events,
-            options=calendar_options,
-            custom_css=calendar_css,
-            key='planner_calendar'
-        )
-
-        
-
-        if state.get('eventClick'):
-            event    = state['eventClick']['event']
-            props = event.get('extendedProps', {})
-            raw   = event.get('title', '')
-
-            with st.container(border=True):
-                col_info, col_del = st.columns([4, 1])
-                with col_info:
-                    st.html(f"<h1 class='subtitle'> {raw} </h1>")
-                    st.caption(f"{str(props.get('Start',''))[:5]} – {str(props.get('End',''))[:5]}")
-                    st.caption(props.get('Category', '—'))
-                    if props.get('Note') and props.get('Note') not in ('', 'None'):
-                        st.caption(props.get('Note'))
-                with col_del:
-                    if st.button('Delete', key='del_plan', type='secondary', use_container_width=True):
-                        DataWork.delete_from_planner(props['db_id'])
-                        st.rerun()
-
-    st.divider()
+    
 
     with st.container(border=True): # Habits Container
 

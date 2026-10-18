@@ -1,14 +1,9 @@
-import datetime
 import pandas as pd
 import functions
 import DataWork
 
 
 
-RECURRING_DEBITS = [
-    {'name': 'Rent',     'amount': 425, 'day': 15},
-    {'name': 'Vodafone', 'amount': 80,  'day': 10}
-]
 
 
 def debit_exists_this_month(name, connection):
@@ -29,9 +24,9 @@ def debit_exists_this_month(name, connection):
 
 def write_returned_debits():
 
-    today = datetime.date.today()
+    today = functions.TODAY
 
-    for item in RECURRING_DEBITS:
+    for item in functions.RECURRING_DEBITS:
 
         try:
         

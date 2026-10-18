@@ -60,13 +60,15 @@ TODAY = datetime.date.today()
 WEEK_TODAY = datetime.date.today().weekday()
 MONDAY = TODAY - datetime.timedelta(days=WEEK_TODAY)
 
-
+ 
 # from secrets.toml
 
 try:
     WORKED_COMPANIES = dict(st.secrets['worked_companies'])
 
     DONOR_SCHOLLERSHIPS = st.secrets['donor_schollerships']['names']
+
+    RECURRING_DEBITS = [dict(element) for element in st.secrets['recurring_debits'] ]
 
 except Exception as e:
     erro_logger(e, '.secrets.toml')
