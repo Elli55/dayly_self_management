@@ -629,7 +629,7 @@ def change_debit_status(iid):
 
 # stady
 
-def add_uni_modul(name : str, semester: int, prof: str, exam: str = 'Unknown', done :int = 0, overall_mark : float = 0.0 ):
+def add_uni_modul(name : str, semester: int, prof: str, exam: str = 'Unknown', done :int = 0, overall_mark : float= 0.0):
     try:
 
         corsor.execute('''
@@ -655,4 +655,29 @@ def add_uni_modul(name : str, semester: int, prof: str, exam: str = 'Unknown', d
         connection.commit()
 
     except Exception as e:
-        functions.erro_logger(e, 'DataWork/add_uni_modul')    
+        functions.erro_logger(e, 'DataWork/add_uni_modul')  
+
+
+
+
+def add_exame(exam, idd):
+
+    try:
+
+        corsor.execute('''
+
+            UPDATE UniModuls
+            SET exam = ?
+            WHERE id = ?
+
+            ''', (exam, idd))
+
+        connection.commit()
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/add_exam')
+
+
+def done_modul(modul, done: int = 0, overall_mark : float= 0.0):
+
+    print()
