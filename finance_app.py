@@ -498,7 +498,7 @@ if page == functions.PAGE_NAMES[1]:
     if df_unpaid_debits.empty:
         st.error('No Debits more')
     else:
-        with st.container():
+        with st.container(): # debits
             header_for_debits = st.columns(4, gap='xxsmall')
 
             header_for_debits[0].html("<p class='df_headers'> The name </p>")
@@ -565,7 +565,7 @@ if page == functions.PAGE_NAMES[1]:
     st.html("<h1 class='title'> Working Hours List </h1>")
 
 
-    if not result_un_paid_salary:
+    if not result_un_paid_salary: # working hours
         st.info('No more unpaid working hours')
     else:
 
@@ -683,7 +683,7 @@ if page == functions.PAGE_NAMES[2]: # Input area
 
 
 
-    with col3:
+    with col3: # working hours
 
         with st.form('WriteWorkHours'):
             st.subheader('Write Working Hours')

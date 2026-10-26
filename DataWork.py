@@ -494,7 +494,7 @@ def write_work_hours(company, date_of_work, start_time, end_time, salary_per_hou
                VALUES(?,?,?,?,?,?,?,0,?)''',
             (company, str(date_of_work), str(start_time), str(end_time),
             total_hours, salary_per_hour, 
-            functions.WORKED_COMPANIES.get(f'{company}').get('montly_hours'), 
+            functions.WORKED_COMPANIES.get(f'{company}').get('montly_hour'), 
             functions.DATE_OF_DAY)
         )
 
