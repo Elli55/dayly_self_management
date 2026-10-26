@@ -1,4 +1,4 @@
-import datetime
+import datetime 
 import pandas as pd
 import sqlite3 as sq
 import calculation
@@ -310,27 +310,40 @@ corsor = connection.cursor()
 
 #                 ''')
 
-connection.commit()
+# connection.commit()
 
-def calculate_tips_pre_company(company):
+# def calculate_tips_pre_company(company):
 
-    df_tips = pd.read_sql('''SELECT * FROM Income
-                             WHERE note = 'Tips'
+#     df_tips = pd.read_sql('''SELECT * FROM Income
+#                              WHERE note = 'Tips'
 
-                            ''', connection)
+#                             ''', connection)
 
-    sum = 0
+#     sum = 0
     
-    for _, line in df_tips.iterrows():
+#     for _, line in df_tips.iterrows():
 
-        if int(line['date'][5]) ==1:
-            print(f"{line['date']} - {line['amount']}")
-            sum += line['amount']
-    print(sum)
+#         if int(line['date'][5]) ==1:
+#             print(f"{line['date']} - {line['amount']}")
+#             sum += line['amount']
+#     print(sum)
 
 
 
 
 
     
-calculate_tips_pre_company('BrinkGeherMeyer')    
+# calculate_tips_pre_company('BrinkGeherMeyer')    
+
+
+
+# df = pd.read_sql('''SELECT * FROM WorkHours WHERE payed = 0''', connection)
+
+# print(df)
+
+
+# diff = round(
+#                     (dt.combine(datetime.date.today(), end_time) -
+#                     dt.combine(datetime.date.today(), start_time)
+#                     ).total_seconds() / 3600, 2
+#                 )

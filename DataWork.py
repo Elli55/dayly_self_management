@@ -549,7 +549,7 @@ def over_times_per_work(company, hours, nominal, month):
 
     try:
 
-        corsor = connection.cursor()
+        
 
         corsor.execute(
 
