@@ -260,9 +260,8 @@ if page == functions.PAGE_NAMES[0]:
                         todo_cols = st.columns([0.6, 5, 1.8, 1.4, 0.8], gap='xxsmall',
                                                vertical_alignment='center')
 
-                        todo_cols[0].checkbox('Done', key=f"todo_done_{row['id']}",
-                                              label_visibility='collapsed',
-                                              on_change=DataWork.well_done_todo, args=(row['id'],))
+                        todo_cols[0].button('✓', type='tertiary', key=f"todo_done_{row['id']}",
+                                            on_click=DataWork.well_done_todo, args=(row['id'],))
                         todo_cols[1].html(f"<p class='element_of_df'>{row['title']}</p>")
                         todo_cols[2].html(f"<span class='todo_tag'>{row['category'] or ''}</span>")
                         todo_cols[3].caption(functions.TODO_TIMEDIC.get(row['time_request'], ''))

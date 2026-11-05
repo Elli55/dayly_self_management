@@ -76,8 +76,8 @@ except Exception as e:
 PAGE_NAMES = ['Dayly Dashboard', 'Finance', 'Data Entery', 'Math']
 
 CATEGORY_FOR_EXPENSES = ['Food', 'Food Out Side','Alchohol', 'Cigarette',
-                         'Rent','Clothes','Education','Gift','Debitor','Invest',
-                         'Cleaning', 'Maintenace Staff','Travel', 'Family']
+                         'Rent','Clothes','Education','Gift','Debitor', 'Kreditor','Invest',
+                         'Cleaning', 'Maintenace Staff','Travel', 'Family', 'Internet', 'Bank']
 
 CATEGORY_LIMITS_FOR_EXPENSES = {'Food': {'low': 50, 'limit':150},
                         'Alchohol': {'low': 25, 'limit':60},
@@ -93,7 +93,9 @@ CATEGORY_LIMITS_FOR_EXPENSES = {'Food': {'low': 50, 'limit':150},
                         'Rent':{'low':250, 'limit':500},
                         'Invest':{'low':100, 'limit':500},
                         'Food Out Side':{'low':50, 'limit':100},
-                        'Clothes':{'low':10, 'limit':50}}
+                        'Clothes':{'low':10, 'limit':50},
+                        'Internet': {'low':25, 'limit':100},
+                        'Bank':{'low':5,'limit':15}}
 
 
 INCOME_SOURCE = ['Tips', 'Work', 'Schollership',  'Kreditor', 'Invest']

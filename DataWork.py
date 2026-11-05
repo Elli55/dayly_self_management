@@ -316,7 +316,7 @@ def note_to_todo(note_id, category, time_request):
             return
 
         corsor.execute('''
-            INSERT INTO Todos(title, category, time_request created_date)
+            INSERT INTO Todos(title, category, time_request, created_date)
             VALUES(?,?,?,?)
             ''', (row[0], category,time_request, functions.DATE_OF_DAY))
 

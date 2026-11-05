@@ -347,3 +347,34 @@ corsor = connection.cursor()
 #                     dt.combine(datetime.date.today(), start_time)
 #                     ).total_seconds() / 3600, 2
 #                 )
+
+
+
+
+# print(pd.read_sql('PRAGMA table_info(Todos)', connection))
+
+# corsor.execute("SELECT id, title FROM Todos WHERE done = 1 AND done_date = ?", ('2026-10-27',))
+# print(corsor.fetchall())
+
+# corsor.execute(
+#     "UPDATE Todos SET done = 0, done_date = NULL WHERE done = 1 AND done_date = ?",
+#     ('2026-10-27',)
+# )
+# print('changed:', corsor.rowcount)
+
+# connection.commit()
+
+# print(pd.read_sql('SELECT * FROM Todos', connection))
+
+
+
+# df_last_month_balance = pd.read_sql('''SELECT avg(balance) as avg_balance FROM Balance 
+
+#                         WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now','start of month' ,'-1 month')
+
+#                         ''', connection)
+
+# print(df_last_month_balance)
+
+df = pd.read_sql('SELECT date, balance FROM Balance ORDER BY date DESC LIMIT 10', connection)
+print(df)
