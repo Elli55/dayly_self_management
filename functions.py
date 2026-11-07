@@ -77,7 +77,7 @@ PAGE_NAMES = ['Dayly Dashboard', 'Finance', 'Data Entery', 'Math']
 
 CATEGORY_FOR_EXPENSES = ['Food', 'Food Out Side','Alchohol', 'Cigarette',
                          'Rent','Clothes','Education','Gift','Debitor', 'Kreditor','Invest',
-                         'Cleaning', 'Maintenace Staff','Travel', 'Family', 'Internet', 'Bank']
+                         'Cleaning', 'Maintenace Staff','Travel', 'Family', 'Internet', 'Bank', 'Sport', 'Unknown']
 
 CATEGORY_LIMITS_FOR_EXPENSES = {'Food': {'low': 50, 'limit':150},
                         'Alchohol': {'low': 25, 'limit':60},
@@ -95,7 +95,10 @@ CATEGORY_LIMITS_FOR_EXPENSES = {'Food': {'low': 50, 'limit':150},
                         'Food Out Side':{'low':50, 'limit':100},
                         'Clothes':{'low':10, 'limit':50},
                         'Internet': {'low':25, 'limit':100},
-                        'Bank':{'low':5,'limit':15}}
+                        'Bank':{'low':5,'limit':15},
+                        'Sport':{'low':10, 'limit':25},
+                        'Unknown':{'low':5, 'limit':20}
+                        }
 
 
 INCOME_SOURCE = ['Tips', 'Work', 'Schollership',  'Kreditor', 'Invest']
