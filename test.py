@@ -4,6 +4,12 @@ import sqlite3 as sq
 import calculation
 import functions
 import DataWork
+import requests as rq
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 
 connection = functions.connection
 
@@ -376,5 +382,11 @@ corsor = connection.cursor()
 
 # print(df_last_month_balance)
 
-df = pd.read_sql('SELECT date, balance FROM Balance ORDER BY date DESC LIMIT 10', connection)
-print(df)
+# df = pd.read_sql('SELECT date, balance FROM Balance ORDER BY date DESC LIMIT 10', connection)
+# print(df)
+
+token = os.getenv('TELEGRAM_TOKEN')
+
+result = rq.get(f'https://api.telegram.org/bot/{token}/getUpdates')
+
+print(result)
