@@ -9,21 +9,28 @@ BASE = Path(__file__).parent
 ENV_FILE = BASE / 'system' / '.env'
 load_dotenv(ENV_FILE, encoding='utf-8-sig')
 
+try:
+    TOKEN = os.getenv('TELEGRAM_TOKEN')
+    if not TOKEN:
+        fc.erro_logger('No TOKEN for Telegram', 'first check .env and server')
+except Exception as e:
+    fc.erro_logger(e, 'telegram_bot/TOKEN')        
+
+
 connection = fc.connection
 cursor = connection.cursor()
+
+
 
 def get_telegram_result():
 
     try:
 
-        token = os.getenv('TELEGRAM_TOKEN')
-        
-
-        result = rq.get(f'https://api.telegram.org/bot{token}/getUpdates')
+        result = rq.get(f'https://api.telegram.org/bot{TOKEN}/getUpdates')
 
         result.raise_for_status()
 
-        with open('datas/telegram_logger.jsonl', 'a', encoding='utf-8') as f:
+        with open('system/telegram_logger.jsonl', 'a', encoding='utf-8') as f:
             json.dump(result.json(), f, ensure_ascii=False, indent=4)
 
     except Exception as e:
@@ -31,12 +38,7 @@ def get_telegram_result():
 
 get_telegram_result()         
 
-
-def parse_message(text:str):
-
-    parts = text.strip().split()
-    
-    #Income
+def expense_structure(parts):
 
     expense_name = str()
     expense_category = str()
@@ -44,32 +46,69 @@ def parse_message(text:str):
     expense_date = str()
     expense_note = str()
 
-
-    if parts[0].lower() == 'expenses':
         
-        if len(parts) == 4:
-            expense_name = parts[1]
-            expense_category = parts[2]
-            expense_amount = parts[3]
-            expense_date = parts[4]
-            expense_note = 'None'
+    if len(parts) == 4:
+        expense_name = parts[1]
+        expense_category = parts[2]
+        expense_amount = parts[3]
+        expense_date = parts[4]
+        expense_note = 'None'
 
-        if len(parts) < 4:
-            fc.erro_logger('Wrong size Message ', f'Telegram message : {text}')
-            
-        if len(parts) == 5:
-            expense_name = parts[1]
-            expense_category = parts[2]
-            expense_amount = parts[3]
-            expense_date = parts[4]
-            expense_note = parts[5]
-            
+    elif len(parts) < 4:
+        fc.erro_logger('Wrong size Message ', f'Telegram message : {parts}')
+        
+    elif len(parts) == 5:
+        expense_name = parts[1]
+        expense_category = parts[2]
+        expense_amount = parts[3]
+        expense_date = parts[4]
+        expense_note = parts[5]
+        
 
-        cursor.execute('''INSERT INTO Expenses(name, category, amount, date, note )
-                        VALUES(?,?,?,?,?)''', 
-                        (expense_name, expense_category, expense_amount, expense_date, expense_note))
+    cursor.execute('''INSERT INTO Expenses(name, category, amount, date, note )
+                    VALUES(?,?,?,?,?)''', 
+                    (expense_name, expense_category, expense_amount, expense_date, expense_note))
 
-        connection.execute()
+    connection.execute()
+
+
+def income_structure(parts):     
+
+    income_source = str()
+    income_amount = str()
+    income_date = str()
+    income_note = str()
+
+
+    if len(parts) < 4:
+
+        fc.erro_logger('Wrong message size ', f'Message from telegram : {parts}')
+
+    else:
+
+        income_source = parts[1]
+        income_amount = parts[2]
+        income_date = parts[3]
+        income_note = parts[4]
+
+
+    cursor.execute('''INSERT INTO Income(source, amount, date, note)
+                    VALUES (?, ?, ?, ?)''', (income_source, income_amount, income_date, income_note))
+
+    connection.commit()
+
+
+
+
+def parse_message(text:str):
+
+    parts = text.strip().split()
+    
+    #Expenses
+
+    
+
+   
 
 
 
