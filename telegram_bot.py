@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 import json
+import datetime as dt
 
 BASE = Path(__file__).parent
 ENV_FILE = BASE / 'system' / '.env'
@@ -24,17 +25,32 @@ cursor = connection.cursor()
 
 def get_telegram_result():
 
+    text = str()
+    date = str()
+    sender = str()
+    data = list()
+
     try:
 
         result = rq.get(f'https://api.telegram.org/bot{TOKEN}/getUpdates')
 
         result.raise_for_status()
 
-        with open('system/telegram_logger.jsonl', 'a', encoding='utf-8') as f:
-            json.dump(result.json(), f, ensure_ascii=False, indent=4)
+        for item in result.json()['result']:
+            data.append({'id':item['message']['message_id'],
+                        'text':item['message']['text'],
+                        'date':dt.datetime.fromtimestamp(item['message']['date'], tz=dt.timezone.utc).isoformat(),
+                        'sender':f"{item['message']['from']['username']}"})
+
+
+        for i in data:
+            with open('system/telegram_logger_2.jsonl', 'a', encoding='utf-8') as f:
+                json.dump(i, f, ensure_ascii=False, indent=4)
+
+        
 
     except Exception as e:
-        print(e)   
+        fc.erro_logger(e, 'telegram_bot/get_telegram_result')  
 
 get_telegram_result()         
 
