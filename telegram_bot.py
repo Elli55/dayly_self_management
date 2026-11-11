@@ -40,7 +40,8 @@ def get_telegram_result():
             data.append({'id':item['message']['message_id'],
                         'text':item['message']['text'],
                         'date':dt.datetime.fromtimestamp(item['message']['date'], tz=dt.timezone.utc).isoformat(),
-                        'sender':f"{item['message']['from']['username']}"})
+                        'sender':f"{item['message']['from']['username']}",
+                        'done':0})
 
 
         for i in data:

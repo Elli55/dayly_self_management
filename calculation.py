@@ -62,7 +62,7 @@ def calculate_last_month_balance_and_delta_for_balance():
 
                         WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now','start of month' ,'-1 month')
 
-                        ''', connection)
+                        ''', connection) 
 
         last_month_balance = round(float(df_last_month_balance.iloc[0, 0] or 0), 2)
 

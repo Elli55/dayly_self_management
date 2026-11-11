@@ -385,8 +385,4 @@ corsor = connection.cursor()
 # df = pd.read_sql('SELECT date, balance FROM Balance ORDER BY date DESC LIMIT 10', connection)
 # print(df)
 
-token = os.getenv('TELEGRAM_TOKEN')
 
-result = rq.get(f'https://api.telegram.org/bot/{token}/getUpdates')
-
-print(result)
