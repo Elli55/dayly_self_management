@@ -534,7 +534,19 @@ if page == functions.PAGE_NAMES[1]:
                 col1, col2 = st.columns(2)
 
                 if col1.button('Paid', type='primary', width='stretch'):
-                    DataWork.write_expenses(line['name'],paid_amout,line['name'],functions.DATE_OF_DAY, f'Paid kreditor for {line['name']}')
+                    category = 'Kreditor'
+                    note = f'Paid for {line['name']} - {line['amount']}'
+
+                    for i in range(len(functions.RECURRING_DEBITS)):
+
+                        if line['name'] == functions.RECURRING_DEBITS[i].get('name'):
+                            category = functions.RECURRING_DEBITS[i].get('category')
+                            note = functions.DATE_OF_DAY[:7]
+
+                        
+
+
+                    DataWork.write_expenses(line['name'],paid_amout,line['name'],category,functions.DATE_OF_DAY, note)
                     DataWork.change_debit_status(line['id'])
                     if rest:
                         DataWork.write_debits(line['name'], rest, line['deadline'],functions.DATE_OF_DAY)

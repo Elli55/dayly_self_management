@@ -386,3 +386,15 @@ corsor = connection.cursor()
 # print(df)
 
 
+# print(functions.RECURRING_DEBITS)
+line = {'name':'Vodafone'}
+
+
+for i in range(len(functions.RECURRING_DEBITS)):
+
+
+    if line['name'] == functions.RECURRING_DEBITS[i].get('name'):
+        category = functions.RECURRING_DEBITS[i].get('category')
+        note = functions.DATE_OF_DAY[:7]
+
+        print(category, note)
