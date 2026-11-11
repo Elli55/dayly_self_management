@@ -680,4 +680,42 @@ def add_exame(exam, idd):
 
 def done_modul(modul, done: int = 0, overall_mark : float= 0.0):
 
+
     print()
+
+
+
+# Telegram
+
+def add_telegram_message(text_id: int, sender: str, date: str, category: str , text: str, done: str):
+
+    try:
+
+        corsor.execute('''
+            
+            CREATE TABLE IF NOT EXISTS TelegramMessage (
+            
+            id INTEGER PRIMARY KEY NOT NULL,
+            sender TEXT,
+            date TEXT,
+            category TEXT,
+            text TEXT,
+            done TEXT
+            )
+        
+            ''')
+
+        corsor.execute('''
+
+            INSERT INTO TelegramMessage (sender, date, category,text, done)
+            VALUES(?,?,?,?,?)
+            ON CONFLICT(id) DO NOTHING 
+
+            ''', text_id,sender, date, text)
+
+        connection.commit()
+
+    except Exception as e:
+        functions.erro_logger(e, 'DatWorks/add_telegram_message')
+
+

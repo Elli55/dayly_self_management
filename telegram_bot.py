@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import json
 import datetime as dt
+import DataWork
 
 BASE = Path(__file__).parent
 ENV_FILE = BASE / 'system' / '.env'
@@ -37,23 +38,30 @@ def get_telegram_result():
         result.raise_for_status()
 
         for item in result.json()['result']:
-            data.append({'id':item['message']['message_id'],
-                        'text':item['message']['text'],
-                        'date':dt.datetime.fromtimestamp(item['message']['date'], tz=dt.timezone.utc).isoformat(),
-                        'sender':f"{item['message']['from']['username']}",
-                        'done':0})
 
+            category = str()
 
-        for i in data:
-            with open('system/telegram_logger_2.jsonl', 'a', encoding='utf-8') as f:
-                json.dump(i, f, ensure_ascii=False, indent=4)
+            for i in item['message']['text'].strip().split():
+                category = i
+                
+                break
 
-        
+            print(category, item['message']['text'].strip().split()[-1])
+            
+
+            # DataWork.add_telegram_message(item['message']['message_id'],
+            #                               item['message']['from']['username'],
+            #                               dt.datetime.fromtimestamp(item['message']['date'], tz=dt.timezone.utc).strftime('%Y-%m-%d %H:%M'),
+            #                               category,
+            #                               item['message']['text'],
+            #                               'read'
+            #                              )       
 
     except Exception as e:
         fc.erro_logger(e, 'telegram_bot/get_telegram_result')  
 
-get_telegram_result()         
+get_telegram_result()
+     
 
 def expense_structure(parts):
 
