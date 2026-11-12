@@ -46,21 +46,20 @@ def get_telegram_result():
                 
                 break
 
-            print(category, item['message']['text'].strip().split()[-1])
             
 
-            # DataWork.add_telegram_message(item['message']['message_id'],
-            #                               item['message']['from']['username'],
-            #                               dt.datetime.fromtimestamp(item['message']['date'], tz=dt.timezone.utc).strftime('%Y-%m-%d %H:%M'),
-            #                               category,
-            #                               item['message']['text'],
-            #                               'read'
-            #                              )       
+            DataWork.add_telegram_message(item['message']['message_id'],
+                                          item['message']['from']['username'],
+                                          dt.datetime.fromtimestamp(item['message']['date'], tz=dt.timezone.utc).strftime('%Y-%m-%d %H:%M'),
+                                          category,
+                                          item['message']['text'],
+                                          'read'
+                                         )       
 
     except Exception as e:
         fc.erro_logger(e, 'telegram_bot/get_telegram_result')  
 
-get_telegram_result()
+
      
 
 def expense_structure(parts):

@@ -15,6 +15,30 @@ connection = functions.connection
 
 corsor = connection.cursor()
 
+
+# df = pd.read_sql("SELECT * FROM WorkHours where company = 'BrinkGeherMeyer'", connection)
+
+# print(df)
+
+
+corsor.execute('''UPDATE WorkHours
+                SET salary_per_hour = 14.5
+                WHERE company = 'BrinkGeherMeyer'
+                
+                ''')
+connection.commit()
+
+
+# for name, info in functions.WORKED_COMPANIES.items():
+#     print(name, '->', dict(info))
+
+# i =  list(functions.WORKED_COMPANIES)[0]
+# b =  float(functions.WORKED_COMPANIES[i]['per_hour'])
+
+
+
+# print(i, b)
+
 # corsor.execute('''
 
 #         UPDATE Workhours SET montly_hours=80 WHERE company='BrinkGeherMeyer'
@@ -387,14 +411,14 @@ corsor = connection.cursor()
 
 
 # print(functions.RECURRING_DEBITS)
-line = {'name':'Vodafone'}
+# line = {'name':'Vodafone'}
 
 
-for i in range(len(functions.RECURRING_DEBITS)):
+# for i in range(len(functions.RECURRING_DEBITS)):
 
 
-    if line['name'] == functions.RECURRING_DEBITS[i].get('name'):
-        category = functions.RECURRING_DEBITS[i].get('category')
-        note = functions.DATE_OF_DAY[:7]
+#     if line['name'] == functions.RECURRING_DEBITS[i].get('name'):
+#         category = functions.RECURRING_DEBITS[i].get('category')
+#         note = functions.DATE_OF_DAY[:7]
 
-        print(category, note)
+#         print(category, note)

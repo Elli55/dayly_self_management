@@ -11,7 +11,7 @@ from datetime import datetime as dt
 
 
 
-try:
+try: #setup
 
     st.set_page_config(page_title='My Space', page_icon='🏃‍♂️‍➡️', layout='wide')
 
@@ -49,7 +49,12 @@ with st.sidebar:
 page = st.session_state.page
 
 
-if page == functions.PAGE_NAMES[0]:
+##############
+### Page 1 ###
+##############
+
+
+if page == functions.PAGE_NAMES[0]: # Dayly Dashboard
 
 
 
@@ -420,17 +425,9 @@ if page == functions.PAGE_NAMES[0]:
             content_colm_habit[8].caption(f'{total} Days')            
 
 
-
-    
-
-
-
-            
-
-                 
-                    
-
-
+##############
+### Page 2 ###
+##############
 
 
 
@@ -603,7 +600,12 @@ if page == functions.PAGE_NAMES[1]:
 
     st.divider()
 
-  
+
+##############
+### Page 3 ###
+##############
+
+
 
 if page == functions.PAGE_NAMES[2]: # Input area
 
@@ -694,46 +696,55 @@ if page == functions.PAGE_NAMES[2]: # Input area
 
 
 
-    with col3: # working hours
+    with col3:
 
-        with st.form('WriteWorkHours'):
+        with st.container(border=True):
+
             st.subheader('Write Working Hours')
 
-            company_name    = st.selectbox('Company', functions.WORKED_COMPANIES.keys())
-            date_of_work    = st.date_input('Date', value=functions.DATE_OF_DAY)
+        
+            company_name = st.selectbox('Company', list(functions.WORKED_COMPANIES))
+            default_rate = float(functions.WORKED_COMPANIES[company_name]['per_hour'])
 
-            col_t1, col_t2 = st.columns(2)
-            with col_t1:
-                start_time  = st.time_input('Start time', value=datetime.time(12, 0))
-            with col_t2:
-                end_time    = st.time_input('End time',   value=datetime.time(18, 0))
+            with st.form('WriteWorkHours'): # working hours
+                date_of_work = st.date_input('Date', value=functions.DATE_OF_DAY)
 
-            salary_per_hour = st.number_input('Salary per hour (€)',
-                                            value=14.5, min_value=0.0,
-                                            max_value=1000.0, step=0.5)
-
-            
-            if start_time and end_time:
+                col_t1, col_t2 = st.columns(2)
                 
-                diff = round(
-                    (dt.combine(datetime.date.today(), end_time) -
-                    dt.combine(datetime.date.today(), start_time)
-                    ).total_seconds() / 3600, 2
-                )
-                if diff > 0:
-                    st.caption(f'Total: {diff}h × {salary_per_hour} € = {round(diff * salary_per_hour, 2)} €')
-                else:
-                    st.warning('End time must be after start time')
+                with col_t1:
+                    start_time = st.time_input('Start time', value=datetime.time(12, 0))
+                with col_t2:
+                    end_time = st.time_input('End time', value=datetime.time(18, 0))
 
-            if st.form_submit_button('Write'):
-                if end_time <= start_time:
-                    st.error('End time must be after start time')
-                else:
-                    DataWork.write_work_hours(
-                        company_name, date_of_work,
-                        start_time, end_time, salary_per_hour
+                salary_per_hour = st.number_input(
+                    'Salary per hour (€)',
+                    value=default_rate,
+                    min_value=0.0, max_value=1000.0, step=0.5,
+                    key=f'salary_{company_name}'   
+                )
+
+                
+                if start_time and end_time:
+                    
+                    diff = round(
+                        (dt.combine(datetime.date.today(), end_time) -
+                        dt.combine(datetime.date.today(), start_time)
+                        ).total_seconds() / 3600, 2
                     )
-                    st.success(f'{diff}h added for {company_name}')
+                    if diff > 0:
+                        st.caption(f'Total: {diff}h × {salary_per_hour} € = {round(diff * salary_per_hour, 2)} €')
+                    else:
+                        st.warning('End time must be after start time')
+
+                if st.form_submit_button('Write'):
+                    if end_time <= start_time:
+                        st.error('End time must be after start time')
+                    else:
+                        DataWork.write_work_hours(
+                            company_name, date_of_work,
+                            start_time, end_time, salary_per_hour
+                        )
+                        st.success(f'{diff}h added for {company_name}')
 
 
 
