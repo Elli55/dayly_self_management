@@ -7,6 +7,9 @@ import DataWork
 import requests as rq
 from dotenv import load_dotenv
 import os
+import telegram_bot
+
+
 
 load_dotenv()
 
@@ -16,17 +19,36 @@ connection = functions.connection
 corsor = connection.cursor()
 
 
+telegram_bot.get_telegram_result()
+
+
+df = pd.read_sql('''SELECT * FROM TelegramMessage''', connection)
+
+df_expenses = pd.read_sql('''SELECT * FROM TelegramMessage
+     
+                                WHERE category ='Expenses'
+                                ''', connection)
+
+message = df_expenses['text'].iloc(0)
+
+
+print(message)
+
+
+
+
+
 # df = pd.read_sql("SELECT * FROM WorkHours where company = 'BrinkGeherMeyer'", connection)
 
 # print(df)
 
 
-corsor.execute('''UPDATE WorkHours
-                SET salary_per_hour = 14.5
-                WHERE company = 'BrinkGeherMeyer'
+# corsor.execute('''UPDATE WorkHours
+#                 SET salary_per_hour = 14.5
+#                 WHERE company = 'BrinkGeherMeyer'
                 
-                ''')
-connection.commit()
+#                 ''')
+# connection.commit()
 
 
 # for name, info in functions.WORKED_COMPANIES.items():

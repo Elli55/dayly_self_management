@@ -707,11 +707,11 @@ def add_telegram_message(text_id: int, sender: str, date: str, category: str , t
 
         corsor.execute('''
 
-            INSERT INTO TelegramMessage (sender, date, category,text, done)
-            VALUES(?,?,?,?,?)
+            INSERT INTO TelegramMessage (id,sender, date, category,text, done)
+            VALUES(?,?,?,?,?,?)
             ON CONFLICT(id) DO NOTHING 
 
-            ''', text_id,sender, date, text)
+            ''', (text_id,sender, date, category,text, done))
 
         connection.commit()
 
