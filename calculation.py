@@ -183,6 +183,9 @@ def df_debits_and_unpaid_debits():
 
 # working
 
+def load_worked_hours_df():
+    return pd.read_sql('SELECT * FROM Workhours', connection)
+
 
 
 def un_paid_working_hours():

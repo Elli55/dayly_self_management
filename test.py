@@ -18,21 +18,54 @@ connection = functions.connection
 
 corsor = connection.cursor()
 
-df_expenses = pd.read_sql('''SELECT * FROM TelegramMessage
+
+for _, line in calculation.load_worked_hours_df().iterrows():
+    print(line)
+    break
+
+
+
+
+
+
+
+
+
+# df_expenses = pd.read_sql('''SELECT * FROM TelegramMessage
      
-                                WHERE category ='Expenses'
-                                ''', connection)
-print(df_expenses)
+#                                 WHERE category ='Expenses'
+#                                 ''', connection)
+# # print(df_expenses)
 
 # for _, line in df_expenses.iterrows():
 
 #     text_elements = line['text'].strip().split()
 
-#     if len(text_elements) <
-#     print(line['text'])
+#     if len(text_elements) <= 3:
+
+#         DataWork.change_status_of_tg_message(line['id'], 'error')
+
+#     elif len(text_elements) == 5:
+#         DataWork.write_expenses(text_elements[1],
+#                                 text_elements[2],
+#                                 text_elements[3],
+#                                 line['date'][:10],
+#                                 text_elements[4])
+        
+#     elif len(text_elements) == 4:
+
+#         DataWork.write_expenses(text_elements[1],
+#                                 text_elements[2],
+#                                 text_elements[3],
+#                                 line['date'][:10],
+#                                 'None')
+#     else:
+#         functions.erro_logger('Error in calculation', 'telegram_bot/')
 
 
-print(calculation.load_expenses_df())
+
+
+
 
 # telegram_bot.get_telegram_result()
 
