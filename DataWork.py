@@ -719,3 +719,18 @@ def add_telegram_message(text_id: int, sender: str, date: str, category: str , t
         functions.erro_logger(e, 'DatWorks/add_telegram_message')
 
 
+def change_status_of_tg_message(idd: int, status: str):
+
+    try:
+
+        corsor.execute('''
+                UPDATE TelegramMessage
+                SET statun =  ?
+                WHERE id = ?
+
+            ''', (status, idd))
+
+        connection.commit()
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWorks/cgange_status_of_tg_message')

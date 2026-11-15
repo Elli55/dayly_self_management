@@ -24,6 +24,15 @@ df_expenses = pd.read_sql('''SELECT * FROM TelegramMessage
                                 ''', connection)
 print(df_expenses)
 
+# for _, line in df_expenses.iterrows():
+
+#     text_elements = line['text'].strip().split()
+
+#     if len(text_elements) <
+#     print(line['text'])
+
+
+print(calculation.load_expenses_df())
 
 # telegram_bot.get_telegram_result()
 
