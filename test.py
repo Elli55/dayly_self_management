@@ -18,21 +18,27 @@ connection = functions.connection
 
 corsor = connection.cursor()
 
-
-telegram_bot.get_telegram_result()
-
-
-df = pd.read_sql('''SELECT * FROM TelegramMessage''', connection)
-
 df_expenses = pd.read_sql('''SELECT * FROM TelegramMessage
      
                                 WHERE category ='Expenses'
                                 ''', connection)
+print(df_expenses)
 
-message = df_expenses['text'].iloc(0)
+
+# telegram_bot.get_telegram_result()
 
 
-print(message)
+# df = pd.read_sql('''SELECT * FROM TelegramMessage''', connection)
+
+# df_expenses = pd.read_sql('''SELECT * FROM TelegramMessage
+     
+#                                 WHERE category ='Expenses'
+#                                 ''', connection)
+
+# message = df_expenses['text'].iloc(0)
+
+
+# print(message)
 
 
 

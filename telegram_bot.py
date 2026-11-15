@@ -58,7 +58,7 @@ def get_telegram_result():
         DataWork.add_telegram_message(item['message']['message_id'],
                                         item['message']['from']['username'],
                                         dt.datetime.fromtimestamp(item['message']['date'], tz=dt.timezone.utc).strftime('%Y-%m-%d %H:%M'),
-                                        category.lower(),
+                                        category,
                                         item['message']['text'],
                                         'read'
                                         )       
@@ -75,7 +75,7 @@ def parse_message():
      
                                 WHERE category ='Expenses'
                                 ''')
-
+    
 
 
 
