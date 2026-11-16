@@ -460,6 +460,7 @@ def delete_income(name, date):
 
 
 
+
 # works 
 
 def write_work_hours(company, date_of_work, start_time, end_time, salary_per_hour):
@@ -575,6 +576,9 @@ def over_times_per_work(company, hours, nominal, month):
 
     except Exception as e:
         functions.erro_logger(e, 'DataWorks/over_time_per_work')    
+
+
+
 
 # debits
 
@@ -734,3 +738,13 @@ def change_status_of_tg_message(idd: int, status: str):
 
     except Exception as e:
         functions.erro_logger(e, 'DataWorks/cgange_status_of_tg_message')
+
+
+def delete_telegram_message(idd):
+
+    try:
+        corsor.execute("DELETE FROM TelegramMessage WHERE id = ?", (idd,))
+        connection.commit()
+
+    except Exception as e:
+        functions.erro_logger(e, 'DataWork/delete_telegram_message')    

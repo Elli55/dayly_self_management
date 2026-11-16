@@ -13,15 +13,16 @@ import telegram_bot
 
 load_dotenv()
 
+# telegram_bot.get_telegram_result()
+
 
 connection = functions.connection
 
 corsor = connection.cursor()
 
 
-for _, line in calculation.load_worked_hours_df().iterrows():
-    print(line)
-    break
+# corsor.execute("UPDATE TelegramMessage SET done = 'error' WHERE category = 'Worked'")
+# connection.commit()
 
 
 
@@ -30,6 +31,58 @@ for _, line in calculation.load_worked_hours_df().iterrows():
 
 
 
+
+# def get_errors_from_tg_message():
+
+#     try:
+            
+
+#         messages = list()
+
+#         for _, line in pd.read_sql("SELECT * FROM TelegramMessage WHERE done = 'error'", 
+#                                 connection):
+
+#             messages.append((line['date'], line['text']))
+
+#     except Exception as e:
+#         functions.erro_logger(e, 'telegram_bot/get_errors_from_tg_message')        
+
+    
+        
+
+    
+
+# get_errors_from_tg_message() 
+
+
+# df_worked_hours_from_tg_message = pd.read_sql("SELECT * FROM TelegramMessage WHERE category = 'Worked'", connection)
+
+# for _, line in df_worked_hours_from_tg_message.iterrows():
+
+#     text_elements = line['text'].strip().split()
+
+#     if len(text_elements) < 4 or len(text_elements) < 4:
+#         DataWork.change_status_of_tg_message(line['id'], 'error')
+
+#     elif len(text_elements) == 4:
+
+#         DataWork.write_work_hours(text_elements[1],
+#                                   line['date'],
+#                                   text_elements[2],
+#                                   text_elements[3],
+#                                   fc.WORKED_COMPANIES[text_elements[1]].get('per_hour'))
+
+#     else:
+
+#         fc.erro_logger(f'Error in calculation: {text_elements}', 'telegram_bot/parse_message/expenses')
+#         continue
+
+
+
+
+# for _, line in calculation.load_worked_hours_df().iterrows():
+#     print(line)
+#     break
 
 # df_expenses = pd.read_sql('''SELECT * FROM TelegramMessage
      

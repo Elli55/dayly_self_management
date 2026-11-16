@@ -692,11 +692,7 @@ if page == functions.PAGE_NAMES[2]: # Input area
                     if st.form_submit_button('Write'):
                         DataWork.write_income(type_of_invest,amount_from_invest,date_of_invest_taken, functions.INCOME_SOURCE[4])
 
-
-
-
-
-    with col3:
+    with col3: #worked hours 
 
         with st.container(border=True):
 
@@ -747,10 +743,40 @@ if page == functions.PAGE_NAMES[2]: # Input area
                         st.success(f'{diff}h added for {company_name}')
 
 
+    st.divider()
+
+    with st.container(border=True): # error message
+
+        try:
+
+
+            head_of_error_message = st.columns([2,2,4,2])
+
+            head_of_error_message[0].html("<p class='df_headers'>Message ID </p>")
+            head_of_error_message[1].html("<p class='df_headers'>Date</p>")
+            head_of_error_message[2].html("<p class='df_headers'>Text</p>")
+            head_of_error_message[3].html("<p class='df_headers'>Delete?</p>")
+
+            for item in calculation.get_errors_from_tg_message():
+
+                columns_error_message = st.columns([2,2,4,2])
+
+                columns_error_message[0].html(f"<p class='element_of_df'>{item[0]}</p>")
+                columns_error_message[1].html(f"<p class='element_of_df'>{item[1]}</p>")
+                columns_error_message[2].html(f"<p class='element_of_df'>{item[2]}</p>")
+                if columns_error_message[3].button('Delete', key=f'error_message_{item[0]}'):
+                    DataWork.delete_telegram_message(item[0])
+                    st.success(f'Message from Telegram DB deleted: {item[2]}')
+        
+        except Exception as e:
+            functions.erro_logger(e, 'finance_app/input_area/error_message')            
+
+
+
 
     st.divider()
 
-    st.html("<h1 class='subtitle'> Last 10 Expenses List</h1>")
+    st.html("<h1 class='subtitle'> Last 15 Expenses List</h1>")
 
 
     with st.container():
@@ -760,17 +786,17 @@ if page == functions.PAGE_NAMES[2]: # Input area
         head_of_expense_list[0].html("<p class='df_headers'>Name</p>")
         head_of_expense_list[1].html("<p class='df_headers'>Amount</p>")
         head_of_expense_list[2].html("<p class='df_headers'>Date</p>")
-        head_of_expense_list[3].html("<p class='df_headers'>Note</p>")
+        head_of_expense_list[3].html("<p class='df_headers'>Category</p>")
         head_of_expense_list[4].html("<p class='df_headers'>Delete?</p>")
 
-        for _, line in DF_EXPENSES.tail(10).iloc[::-1].iterrows():
+        for _, line in DF_EXPENSES.tail(15).iloc[::-1].iterrows():
 
             colums = st.columns([3,3,3,3,2])
 
             colums[0].html(f"<p class='element_of_df'>{line['name']}</p>")
             colums[1].html(f"<p class='element_of_df'>{line['amount']}</p>")
             colums[2].html(f"<p class='element_of_df'>{line['date']}</p>")
-            colums[3].html(f"<p class='element_of_df'>{line['note']}</p>")
+            colums[3].html(f"<p class='element_of_df'>{line['category']}</p>")
 
             if colums[4].button('Delete', key=f'expense_{line['id']}'):
                 DataWork.delete_expenses(line['name'], line['date'])

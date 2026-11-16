@@ -235,3 +235,27 @@ def un_paid_working_hours():
         return grouped_by_company, sum_of_salary
 
 
+
+# telegram bot 
+
+def load_telegram_message():
+    return pd.read_sql("SELECT * FROM TelegramMessage")
+
+def get_errors_from_tg_message():
+
+    try:
+            
+
+        messages = list()
+
+        for _, line in pd.read_sql("SELECT * FROM TelegramMessage WHERE done = 'error'", 
+                                connection):
+
+            messages.append((line['id'], line['date'], line['text']))
+
+        return messages
+
+    except Exception as e:
+        functions.erro_logger(e, 'calculation/get_errors_from_tg_message')        
+
+    
