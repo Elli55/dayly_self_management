@@ -25,7 +25,16 @@ corsor = connection.cursor()
 # connection.commit()
 
 
+messages = list()
 
+for _, line in pd.read_sql("SELECT * FROM TelegramMessage WHERE done = 'error'", 
+                                connection).iterrows():
+
+            print(line)
+
+            messages.append((line['id'], line['date'], line['text']))
+
+print(messages)
 
 
 

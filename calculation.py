@@ -242,14 +242,14 @@ def load_telegram_message():
     return pd.read_sql("SELECT * FROM TelegramMessage")
 
 def get_errors_from_tg_message():
-
+ 
     try:
             
 
         messages = list()
 
         for _, line in pd.read_sql("SELECT * FROM TelegramMessage WHERE done = 'error'", 
-                                connection):
+                                connection).iterrows():
 
             messages.append((line['id'], line['date'], line['text']))
 

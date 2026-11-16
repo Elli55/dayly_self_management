@@ -749,7 +749,7 @@ if page == functions.PAGE_NAMES[2]: # Input area
 
         try:
 
-
+ 
             head_of_error_message = st.columns([2,2,4,2])
 
             head_of_error_message[0].html("<p class='df_headers'>Message ID </p>")
