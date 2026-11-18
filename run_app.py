@@ -2,6 +2,7 @@ import getpass, subprocess, sys, time
 from pathlib import Path
 import DataWork
 import functions as fc
+import telegram_bot
 import os
 from dotenv import load_dotenv
 
@@ -51,6 +52,17 @@ try: # balance update
 except Exception as e :
     print('Something wrong  with DB \n')
     fc.erro_logger(e, 'run_app/balance_update')
+
+try: # telegram result
+
+    telegram_bot.parse_message()
+    print('Telegram messages done')
+    time.sleep(3)
+
+except Exception as e:
+    print('Something wrong with Telegram.')
+    time.sleep(10)
+    fc.erro_logger(e, 'run_app/teleghram messages')
 
 
 server = subprocess.Popen(

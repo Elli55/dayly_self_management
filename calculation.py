@@ -190,50 +190,39 @@ def load_worked_hours_df():
 
 def un_paid_working_hours():
 
-
-    
-
     try:
-
         grouped_by_company = pd.read_sql('''
-
-                    SELECT company, sum(total_hours) as worked_hours,
-                    AVG(montly_hours) as montly_hours, 
-                    AVG(salary_per_hour) as nominal  
-                    FROM Workhours WHERE payed = 0 
-                    GROUP BY company
-
-                    ''', connection)
+            SELECT company,
+                   SUM(total_hours)                    AS worked_hours,
+                   AVG(montly_hours)                   AS montly_hours,
+                   AVG(salary_per_hour)                AS nominal,
+                   SUM(total_hours * salary_per_hour)  AS hourly_pay
+            FROM Workhours
+            WHERE payed = 0
+            GROUP BY company
+        ''', connection)
 
         result = {}
-        salary = 0
 
-        
         for _, line in grouped_by_company.iterrows():
+            company = line['company']
 
             if line['montly_hours'] > 0:
-                result[line.get('company')] = {'worked_hours':line['worked_hours'],
-                                      'montly_hours':line['montly_hours'],
-                                      'nominal':line['nominal'],
-                                      'salary':functions.WORKED_COMPANIES.get(f'{line.get('company')}').get('salary')}
-
+                salary = functions.WORKED_COMPANIES[company]['salary']   
             else:
-                result[line.get('company')] = {'worked_hours':line['worked_hours'],
-                                      'montly_hours':line['montly_hours'],
-                                      'nominal':line['nominal'],
-                                      'salary':line['worked_hours'] * line['nominal']}
+                salary = line['hourly_pay']                              
 
-            for item in result.items():
-                salary += item[1].get('salary')
+            result[company] = {'worked_hours': line['worked_hours'],
+                               'montly_hours': line['montly_hours'],
+                               'nominal': line['nominal'],
+                               'salary': salary}
 
+        total_salary = sum(item['salary'] for item in result.values())   
+        return result, total_salary
 
-        return result, salary
     except Exception as e:
         functions.erro_logger(e, 'calculation/un_paid_working_hours')
-        grouped_by_company = pd.DataFrame()
-        sum_of_salary = 0
-        return grouped_by_company, sum_of_salary
-
+        return {}, 0.0
 
 
 # telegram bot 

@@ -21,20 +21,28 @@ connection = functions.connection
 corsor = connection.cursor()
 
 
+df_income_tipss = pd.read_sql('''SELECT SUM(amount) as total_tippss FROM Income  
+                            WHERE note = 'Tips' 
+                            AND date BETWEEN strftime('%Y-%m-%d', '2026-11-01') and strftime('%Y-%m-%d', '2026-11-30')
+                            ''', connection)
+
+print(df_income_tipss)
+
+
 # corsor.execute("UPDATE TelegramMessage SET done = 'error' WHERE category = 'Worked'")
 # connection.commit()
 
 
-messages = list()
+# messages = list()
 
-for _, line in pd.read_sql("SELECT * FROM TelegramMessage WHERE done = 'error'", 
-                                connection).iterrows():
+# for _, line in pd.read_sql("SELECT * FROM TelegramMessage WHERE done = 'error'", 
+#                                 connection).iterrows():
 
-            print(line)
+#             print(line)
 
-            messages.append((line['id'], line['date'], line['text']))
+#             messages.append((line['id'], line['date'], line['text']))
 
-print(messages)
+# print(messages)
 
 
 

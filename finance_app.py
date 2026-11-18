@@ -431,7 +431,7 @@ if page == functions.PAGE_NAMES[0]: # Dayly Dashboard
 
 
 
-if page == functions.PAGE_NAMES[1]:
+if page == functions.PAGE_NAMES[1]: # Finance
 
     write_month_debits.write_returned_debits()
     
@@ -586,6 +586,7 @@ if page == functions.PAGE_NAMES[1]:
         header_for_salary[4].html("<p class='df_headers'>Salary</p>")
 
         for item in result_un_paid_salary.items():
+            
 
             cols = st.columns(5, gap='xxsmall')
 
